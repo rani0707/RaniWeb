@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Language",
+    "skills": ["JavaScript", "TypeScript", "Python", "Java", "C", "C++", "Lua"]
+  },
+  {
+    "title": "Frontend",
+    "skills": ["React", "Next.js", "Vue.js", "HTML/CSS", "Tailwind CSS"]
+  },
+  {
+    "title": "Backend",
+    "skills": ["Node.js", "Express", "PostgreSQL", "MySQL", "MariaDB"]
+  },
+  {
+    "title": "DevOps & Tools",
+    "skills": ["Docker", "AWS", "Cloudflare", "Linux", "macOS", "DataGrip", "VS Code", "Visual Studio", "Git"]
+  }
+]

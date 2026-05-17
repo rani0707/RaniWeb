@@ -1,0 +1,9 @@
+[
+  { "id": 1, "title": "Silver Award", "organization": "Creative Idea Competition", "year": "2023", "description": "창의 아이디어 경진대회(공동수상, 2인) 은상(2위)" },
+  { "id": 2, "title": "Gold Award", "organization": "Creative Idea Competition", "year": "2024", "description": "창의아이디어경진대회(공동수상, 2인) 금상(1위)" },
+  { "id": 3, "title": "Gold Award", "organization": "AI Creative Convergence Competition", "year": "2024", "description": "AI 창의융합 경진대회 금상(1위)" },
+  { "id": 4, "title": "Encouragement Award", "organization": "Creative Idea Competition", "year": "2025", "description": "창의아이디어경진대회(공동수상, 2인) 장려상(4위)" },
+  { "id": 5, "title": "Silver Award", "organization": "Smart Security Solution Competition", "year": "2025", "description": "스마트보안솔루션 경진대회 은상(2위)" },
+  { "id": 6, "title": "Volunteer Award", "organization": "Community Service", "year": "2026", "description": "봉사상" },
+  { "id": 7, "title": "Merit Award", "organization": "Contribution Recognition", "year": "2026", "description": "공로상" }
+]

@@ -1,0 +1,15 @@
+.next
+node_modules
+.git
+.github
+.env*
+*.md
+Dockerfile
+docker-compose.yml
+eslint.config.mjs
+tsconfig.json
+next-env.d.ts
+start.bat
+*.log
+.DS_Store
+Thumbs.db

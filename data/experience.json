@@ -1,0 +1,9 @@
+[
+  { "id": 1, "company": "Fivem 버닝서버", "role": "서버 관리및개발", "period": "2022.01 ~ 2022.09", "description": "" },
+  { "id": 2, "company": "Fivem 화이트서버", "role": "서버 관리및개발", "period": "2023.11 ~ 2024.03", "description": "" },
+  { "id": 3, "company": "Fivem 게스트서버", "role": "서버 관리및개발", "period": "2024.04 ~ 2025.01", "description": "" },
+  { "id": 4, "company": "Fivem 오리서버", "role": "서버 관리및개발", "period": "2025.01 ~ 2025.03", "description": "" },
+  { "id": 5, "company": "Fivem 베어서버", "role": "서버 관리및개발", "period": "2025.04 ~ 2025.06", "description": "" },
+  { "id": 6, "company": "Fivem 클라우드서버", "role": "서버 관리및개발", "period": "2025.06 ~ 2025.10", "description": "" },
+  { "id": 7, "company": "보안과-GoPro 전공동아리", "role": "부장", "period": "2025.03 ~ 2026.01", "description": "전공동아리 활동 및 프로젝트 기획·관리" }
+]
