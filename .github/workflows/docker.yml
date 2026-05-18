@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+﻿name: Build and Push Docker Image
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/raniweb
 
@@ -59,4 +60,3 @@ jobs:
           cat Dockerfile
           echo "=== package.json ==="
           cat package.json
-
