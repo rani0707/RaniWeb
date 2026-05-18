@@ -49,3 +49,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Debug on failure
+        if: failure()
+        run: |
+          echo "=== Directory listing ==="
+          ls -la
+          echo "=== Dockerfile check ==="
+          cat Dockerfile
+          echo "=== package.json ==="
+          cat package.json
+
