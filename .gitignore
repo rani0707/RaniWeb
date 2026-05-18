@@ -4,7 +4,6 @@ node_modules
 .env*
 *.md
 eslint.config.mjs
-tsconfig.json
 next-env.d.ts
 start.bat
 *.log
