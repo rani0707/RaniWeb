@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  app:
+    image: ghcr.io/rani0707/raniweb:latest
+    container_name: raniweb
+    restart: unless-stopped
+    ports:
+      - "32768:32842"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:32842"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json:ro
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_TIMEOUT=60s
+      - WATCHTOWER_DEBUG=false
+      - WATCHTOWER_NOTIFICATIONS=email
+    command: --interval 300 raniweb
