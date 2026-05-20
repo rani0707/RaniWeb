@@ -1,18 +1,18 @@
 [
   {
     "title": "Language",
-    "skills": ["JavaScript", "TypeScript", "Python", "Java", "C", "C++", "Lua", "테스트값11"]
+    "skills": ["JavaScript", "TypeScript", "Python", "Java", "C", "C++", "Lua"]
   },
   {
     "title": "Frontend",
-    "skills": ["React", "Next.js", "Vue.js", "HTML/CSS", "Tailwind CSS", "테스트값22"]
+    "skills": ["React", "Next.js", "Vue.js", "HTML/CSS", "Tailwind CSS"]
   },
   {
     "title": "Backend",
-    "skills": ["Node.js", "Express", "PostgreSQL", "MySQL", "MariaDB", "테스트값33"]
+    "skills": ["Node.js", "Express", "PostgreSQL", "MySQL", "MariaDB"]
   },
   {
     "title": "DevOps & Tools",
-    "skills": ["Docker", "AWS", "Cloudflare", "Linux", "macOS", "DataGrip", "VS Code", "Visual Studio", "Git", "테스트값44"]
+    "skills": ["Docker", "AWS", "Cloudflare", "Linux", "macOS", "DataGrip", "VS Code", "Visual Studio", "Git"]
   }
 ]
