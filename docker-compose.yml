@@ -6,18 +6,20 @@ services:
     container_name: raniweb
     restart: unless-stopped
     ports:
-      - "32768:32842"
+      - "${APP_PORT}:${PORT}"
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-production}
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:32842"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT}"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower:latest
     container_name: watchtower
     restart: unless-stopped
     volumes:
@@ -29,5 +31,5 @@ services:
       - WATCHTOWER_INCLUDE_STOPPED=true
       - WATCHTOWER_TIMEOUT=60s
       - WATCHTOWER_DEBUG=false
-      - WATCHTOWER_NOTIFICATIONS=email
+      - DOCKER_API_VERSION=1.44
     command: --interval 300 raniweb
