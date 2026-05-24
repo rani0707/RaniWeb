@@ -1,6 +1,6 @@
-'use client'
+ 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ComponentPropsWithoutRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './Projects.module.css'
@@ -21,9 +21,22 @@ interface ProjectModalProps {
   onClose: () => void
 }
 
+type MarkdownComponents = ComponentPropsWithoutRef<'img'> & ComponentPropsWithoutRef<'a'>
+
+function isValidMdFile(filename: string): boolean {
+  return /^[a-zA-Z0-9_-]+\.md$/.test(filename)
+}
+
+function sanitizeUrl(url: string): string {
+  if (/^(https?|mailto):\/\//i.test(url)) return url
+  if (/^#/.test(url)) return url
+  return '#'
+}
+
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const [mdContent, setMdContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,21 +52,44 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   }, [onClose])
 
   useEffect(() => {
+    if (!isValidMdFile(project.mdFile)) {
+      setError('유효하지 않은 프로젝트 파일입니다.')
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
+    setError(null)
+
     fetch(`/content/projects/${project.mdFile}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Not found')
+        if (!res.ok) {
+          throw new Error(`파일을 찾을 수 없습니다 (${res.status})`)
+        }
         return res.text()
       })
       .then((text) => {
         setMdContent(text)
         setLoading(false)
       })
-      .catch(() => {
+      .catch((err: Error) => {
+        setError(err.message || '상세 내용을 불러오는 중 오류가 발생했습니다.')
         setMdContent(`# ${project.title}\n\n상세 내용이 없습니다.`)
         setLoading(false)
       })
   }, [project])
+
+  const markdownComponents: Partial<Record<string, React.ComponentType<MarkdownComponents>>> = {
+    img: ({ src, alt }) => {
+      const imgSrc = typeof src === 'string' && /^https?:\/\//.test(src) ? src : undefined
+      return <img src={imgSrc} alt={alt || ''} style={{ maxWidth: '100%', height: 'auto' }} />
+    },
+    a: ({ href, children }) => (
+      <a href={href ? sanitizeUrl(href) : undefined} target="_blank" rel="noopener noreferrer nofollow">
+        {children}
+      </a>
+    ),
+  }
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -75,9 +111,11 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
         {loading ? (
           <div className={styles.modalLoading}>로딩 중...</div>
+        ) : error ? (
+          <div className={styles.modalError}>{error}</div>
         ) : (
           <div className={styles.mdContent}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
               {mdContent}
             </ReactMarkdown>
           </div>

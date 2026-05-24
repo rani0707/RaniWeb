@@ -2,10 +2,8 @@
 node_modules
 .git
 .env*
-*.md
 eslint.config.mjs
 next-env.d.ts
-start.bat
 *.log
 .DS_Store
 Thumbs.db
