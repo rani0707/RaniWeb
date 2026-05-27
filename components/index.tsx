@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import Header from './Header'
 import Hero from './Hero'
 import Projects from './Projects'
@@ -14,7 +15,9 @@ export default function Home() {
     <main>
       <Header />
       <Hero />
-      <Projects />
+      <Suspense fallback={null}>
+        <Projects />
+      </Suspense>
       <Skills />
       <Experience />
       <Certifications />

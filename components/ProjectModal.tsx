@@ -1,8 +1,9 @@
- 'use client'
+'use client'
 
-import { useEffect, useState, type ComponentPropsWithoutRef } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Modal from './Modal'
 import styles from './Projects.module.css'
 
 interface Project {
@@ -21,7 +22,7 @@ interface ProjectModalProps {
   onClose: () => void
 }
 
-type MarkdownComponents = ComponentPropsWithoutRef<'img'> & ComponentPropsWithoutRef<'a'>
+type MarkdownComponents = React.ComponentPropsWithoutRef<'img'> & React.ComponentPropsWithoutRef<'a'>
 
 function isValidMdFile(filename: string): boolean {
   return /^[a-zA-Z0-9_-]+\.md$/.test(filename)
@@ -37,19 +38,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const [mdContent, setMdContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
-    }
-  }, [onClose])
 
   useEffect(() => {
     if (!isValidMdFile(project.mdFile)) {
@@ -92,8 +80,8 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   }
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+    <Modal onClose={onClose}>
+      <div className={styles.modalContent}>
         <button className={styles.modalClose} onClick={onClose} aria-label="닫기">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 6L6 18M6 6l12 12" />
@@ -149,6 +137,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           </div>
         )}
       </div>
-    </div>
+    </Modal>
   )
 }
