@@ -69,7 +69,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   const markdownComponents: Partial<Record<string, React.ComponentType<MarkdownComponents>>> = {
     img: ({ src, alt }) => {
-      const imgSrc = typeof src === 'string' && /^https?:\/\//.test(src) ? src : undefined
+      const imgSrc = typeof src === 'string' && (src.startsWith('/') || src.startsWith('../') || src.startsWith('./') || /^https?:\/\//.test(src)) ? src : undefined
       return <img src={imgSrc} alt={alt || ''} style={{ maxWidth: '100%', height: 'auto' }} />
     },
     a: ({ href, children }) => (

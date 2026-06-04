@@ -29,8 +29,8 @@ HOOK 인트라넷은 Discord 인증을 기반으로 팩션 인원을 관리하�
 
 특히 운영자가 자주 확인하는 정보들을 한 화면에 정리하고, 반복적으로 처리하던 기록 업무를 자동화하면서 **"기능을 만드는 것"을 넘어 "실제로 쓰이는 관리 도구를 만든다"는 감각**을 얻은 프로젝트였습니다.
 
-![사용 사진](../../images/projects/b0f3965e-4d39-47ea-bad6-06e25d9c024d.png)
+![사용 사진](/images/projects/b0f3965e-4d39-47ea-bad6-06e25d9c024d.png)
 
-![사용 사진](../../images/projects/ebf95726-bf83-4631-b8e0-6df028499103.png)
+![사용 사진](/images/projects/ebf95726-bf83-4631-b8e0-6df028499103.png)
 
-![사용 사진](../../images/projects/7ae66be7-52d1-4826-9fcc-903f5bcfc74f.png)
+![사용 사진](/images/projects/7ae66be7-52d1-4826-9fcc-903f5bcfc74f.png)

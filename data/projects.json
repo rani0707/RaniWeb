@@ -78,5 +78,15 @@
     "github": "",
     "url": "",
     "mdFile": "omo_portfolio.md"
+  },
+  {
+    "id": 9,
+    "title": "FiveM 스태프 인트라넷",
+    "description": "FiveM 서버 운영진 웹 기반 스태프 관리 시스템",
+    "tags": ["Node.js", "Express", "React", "TypeScript", "MariaDB", "Sequelize", "JWT", "Mantine"],
+    "year": "2026",
+    "github": "",
+    "url": "",
+    "mdFile": "staff_intranet_portfolio.md"
   }
 ]
