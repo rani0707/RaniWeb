@@ -43,7 +43,7 @@
     "id": 5,
     "title": "대진표 사이트",
     "description": "체육대회 대진표 생성 및 관리 사이트",
-    "tags": ["Python", "HTML", "JS", "CSS"],
+    "tags": ["Python", "MySQL", "HTML", "JS", "CSS"],
     "year": "2025",
     "github": "",
     "url": "",
@@ -58,5 +58,25 @@
     "github": "",
     "url": "",
     "mdFile": "festival-reservation.md"
+  },
+  {
+    "id": 7,
+    "title": "Fivem 팩션 인트라넷",
+    "description": "Fivem 팩션 관리 및 거래 모니터링 시스템",
+    "tags": ["React", "Node.js", "MySQL", "Discord.js"],
+    "year": "2026",
+    "github": "",
+    "url": "",
+    "mdFile": "HOOK_intranet_portfolio.md"
+  },
+  {
+    "id": 8,
+    "title": "오모오모 AI 모자이크 웹서비스",
+    "description": "YOLO 기반 이미지·영상 모자이크 처리",
+    "tags": ["Python", "Flask", "YOLO", "OpenCV", "MySQL", "Socket.IO"],
+    "year": "2024",
+    "github": "",
+    "url": "",
+    "mdFile": "omo_portfolio.md"
   }
 ]
