@@ -4,7 +4,7 @@
 
 코딩 문제 풀이, 정오필 기출 학습, 로드맵 기반 커리큘럼, 자유게시판, 공지사항 관리까지 하나의 플랫폼에서 해결하는 **코딩 학습 포털**입니다. Judge0 API를 활용한 실시간 코드 실행 환경부터, 연도별 세트별 정리된 정오필 퀴즈 시스템, 단계별 진도 관리까지 학습자 중심의 기능을 담았습니다.
 
-![메인 화면](./images/projects/b6cac7d2-d9d8-42ff-aba8-fc7728be4478.png)
+![메인 화면](../../images/projects/b6cac7d2-d9d8-42ff-aba8-fc7728be4478.png)
 
 ---
 
@@ -14,9 +14,9 @@
 
 Judge0 API를 연동하여 Python, C, C++, Java 4개 언어로 코드를 작성하고 바로 실행할 수 있습니다. 문제 난이도별 필터링, 정답률 표시, 풀이 이력 추적 기능을 제공하며, 정답 제출 시 점수가 적립됩니다.
 
-![문제 목록](./images/projects/a3e07d4b-f4fa-42e2-a281-3ea2bd91dff3.png)
+![문제 목록](../../images/projects/a3e07d4b-f4fa-42e2-a281-3ea2bd91dff3.png)
 
-![문제 풀이](./images/projects/498e4013-a6d8-4bce-9d41-1ab9f589cf63.png)
+![문제 풀이](../../images/projects/498e4013-a6d8-4bce-9d41-1ab9f589cf63.png)
 
 ### 2. 정오필 기출 퀴즈
 
