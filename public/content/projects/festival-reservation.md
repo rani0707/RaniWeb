@@ -6,9 +6,9 @@
 
 특히 부스마다 운영 방식이 다른 축제 환경을 반영해 **일반 예약형**, **시간 예약형**, **메뉴 선택형**을 하나의 서비스 안에서 지원하도록 구성했습니다. 단순히 예약만 받는 페이지가 아니라, 현장 운영자와 학생 사용자 모두가 빠르게 사용할 수 있는 흐름을 만드는 데 집중한 프로젝트입니다.
 
-![메인 화면](C:\Users\PC\.cursor\projects\c-Users-PC-Downloads-festival-booking\assets\c__Users_PC_Downloads_festival_booking_b0f592a8-edd9-46a1-a49a-46546ddf24e7.png)
+![메인 화면](./images/projects/b0f592a8-edd9-46a1-a49a-46546ddf24e7.png)
 
-![예약 화면](C:\Users\PC\.cursor\projects\c-Users-PC-Downloads-festival-booking\assets\c__Users_PC_Downloads_festival_booking_cedcb014-3f69-4142-aa9a-b248584d3093.png)
+![예약 화면](./images/projects/cedcb014-3f69-4142-aa9a-b248584d3093.png)
 
 ## 주요 기능
 
