@@ -549,6 +549,10 @@
 }
 
 @media (max-width: 768px) {
+  .section {
+    padding: 80px 0;
+  }
+
   .container {
     padding: 0 24px;
   }
@@ -560,7 +564,11 @@
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 480px) {
+  .section {
+    padding: 60px 0;
+  }
+
   .container {
     padding: 0 20px;
   }
