@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Modal from './Modal'
 import styles from './Projects.module.css'
 
 interface Project {
@@ -21,7 +22,7 @@ interface ProjectModalProps {
   onClose: () => void
 }
 
-// Simple in-memory rate limiter
+// In-memory rate limiter to prevent abuse
 const rateLimiter = {
   requests: new Map<string, number[]>(),
   limit: 10,
@@ -42,14 +43,18 @@ const rateLimiter = {
   }
 }
 
-// Validate and sanitize mdFile path to prevent directory traversal
-function validateMdFilePath(mdFile: string): string | null {
-  // Only allow alphanumeric, hyphens, underscores, and .md extension
-  const safePattern = /^[a-zA-Z0-9_-]+\.md$/
-  if (!safePattern.test(mdFile)) {
-    return null
-  }
-  return mdFile
+type MarkdownComponents = React.ComponentPropsWithoutRef<'img'> & React.ComponentPropsWithoutRef<'a'>
+
+// Validate md file path to prevent directory traversal
+function isValidMdFile(filename: string): boolean {
+  return /^[a-zA-Z0-9_-]+\.md$/.test(filename)
+}
+
+// Sanitize URLs in markdown content to prevent javascript: and other dangerous schemes
+function sanitizeUrl(url: string): string {
+  if (/^(https?|mailto):\/\//i.test(url)) return url
+  if (/^#/.test(url)) return url
+  return '#'
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
@@ -59,55 +64,54 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const clientIdRef = useRef<string>(`modal-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+    if (!isValidMdFile(project.mdFile)) {
+      setError('유효하지 않은 프로젝트 파일입니다.')
+      setLoading(false)
+      return
     }
-    document.addEventListener('keydown', handleKeyDown)
-    document.body.style.overflow = 'hidden'
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
+    if (!rateLimiter.isAllowed(clientIdRef.current)) {
+      setError('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.')
+      setLoading(false)
+      return
     }
-  }, [onClose])
 
-  useEffect(() => {
     setLoading(true)
     setError(null)
 
-    // Validate path to prevent directory traversal attacks
-    const safeFileName = validateMdFilePath(project.mdFile)
-    if (!safeFileName) {
-      setMdContent(`# ${project.title}\n\n잘못된 파일 경로입니다.`)
-      setLoading(false)
-      return
-    }
-
-    // Check rate limit
-    if (!rateLimiter.isAllowed(clientIdRef.current)) {
-      setMdContent(`# ${project.title}\n\n요청이 너무 많습니다. 잠시 후 다시 시도해주세요.`)
-      setLoading(false)
-      return
-    }
-
-    fetch(`/content/projects/${safeFileName}`)
+    fetch(`/content/projects/${project.mdFile}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Not found')
+        if (!res.ok) {
+          throw new Error(`파일을 찾을 수 없습니다 (${res.status})`)
+        }
         return res.text()
       })
       .then((text) => {
         setMdContent(text)
         setLoading(false)
       })
-      .catch(() => {
+      .catch((err: Error) => {
+        setError(err.message || '상세 내용을 불러오는 중 오류가 발생했습니다.')
         setMdContent(`# ${project.title}\n\n상세 내용이 없습니다.`)
         setLoading(false)
       })
   }, [project])
 
+  const markdownComponents: Partial<Record<string, React.ComponentType<MarkdownComponents>>> = {
+    img: ({ src, alt }) => {
+      const imgSrc = typeof src === 'string' && (src.startsWith('/') || src.startsWith('../') || src.startsWith('./') || /^https?:\/\//.test(src)) ? src : undefined
+      return <img src={imgSrc} alt={alt || ''} style={{ maxWidth: '100%', height: 'auto' }} />
+    },
+    a: ({ href, children }) => (
+      <a href={href ? sanitizeUrl(href) : undefined} target="_blank" rel="noopener noreferrer nofollow">
+        {children}
+      </a>
+    ),
+  }
+
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+    <Modal onClose={onClose}>
+      <div className={styles.modalContent}>
         <button className={styles.modalClose} onClick={onClose} aria-label="닫기">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 6L6 18M6 6l12 12" />
@@ -125,9 +129,11 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
         {loading ? (
           <div className={styles.modalLoading}>로딩 중...</div>
+        ) : error ? (
+          <div className={styles.modalError}>{error}</div>
         ) : (
           <div className={styles.mdContent}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
               {mdContent}
             </ReactMarkdown>
           </div>
@@ -161,6 +167,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           </div>
         )}
       </div>
-    </div>
+    </Modal>
   )
 }

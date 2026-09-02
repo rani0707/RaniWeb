@@ -34,14 +34,6 @@
   font-weight: 500;
   color: var(--text-secondary);
   margin-bottom: 24px;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: all 0.5s ease;
-}
-
-.badge.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .badgeDot {
@@ -63,14 +55,6 @@
   line-height: 1.15;
   letter-spacing: -1.5px;
   margin-bottom: 20px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease 0.1s;
-}
-
-.title.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .highlight {
@@ -94,14 +78,6 @@
   line-height: 1.7;
   color: var(--text-secondary);
   margin-bottom: 32px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease 0.15s;
-}
-
-.description.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .stats {
@@ -109,14 +85,6 @@
   align-items: center;
   gap: 28px;
   margin-bottom: 32px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease 0.2s;
-}
-
-.stats.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .statItem {
@@ -147,14 +115,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease 0.25s;
-}
-
-.actions.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .primaryBtn {
@@ -196,14 +156,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: all 0.6s ease 0.2s;
-}
-
-.visual.visible {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .avatarWrapper {

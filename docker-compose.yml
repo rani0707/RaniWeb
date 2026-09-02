@@ -12,7 +12,7 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT}"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT}/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json:ro
+      - ${DOCKER_CONFIG:-/root/.docker}/config.json:/config.json:ro
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=300
@@ -32,4 +32,6 @@ services:
       - WATCHTOWER_TIMEOUT=60s
       - WATCHTOWER_DEBUG=false
       - DOCKER_API_VERSION=1.44
+      - REPO_USER=${REPO_USER:-}
+      - REPO_PASS=${REPO_PASS:-}
     command: --interval 300 raniweb

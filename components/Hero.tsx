@@ -16,24 +16,24 @@ export default function Hero() {
   return (
     <section className={styles.hero} id="about">
       <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={`${styles.badge} ${mounted ? styles.visible : ''}`}>
+        <div className={`${styles.content} ${mounted ? styles.visible : ''}`} aria-hidden={!mounted}>
+          <div className={styles.badge}>
             <span className={styles.badgeDot} />
             Available for work
           </div>
-          
-          <h1 className={`${styles.title} ${mounted ? styles.visible : ''}`}>
+
+          <h1 className={styles.title}>
             안녕하세요,<br />
             Developer<br />
             <span className={styles.highlight}>RANI</span>입니다.
           </h1>
-          
-          <p className={`${styles.description} ${mounted ? styles.visible : ''}`}>
+
+          <p className={styles.description}>
             사용자 경험을 중시하는 개발자입니다.<br />
             깔끔하고 효율적인 코드로 의미 있는 서비스를 만들어갑니다.
           </p>
-          
-          <div className={`${styles.stats} ${mounted ? styles.visible : ''}`}>
+
+          <div className={styles.stats}>
             <div className={styles.statItem}>
               <span className={styles.statNumber}>3+</span>
               <span className={styles.statLabel}>Years</span>
@@ -49,8 +49,8 @@ export default function Hero() {
               <span className={styles.statLabel}>Clients</span>
             </div>
           </div>
-          
-          <div className={`${styles.actions} ${mounted ? styles.visible : ''}`}>
+
+          <div className={styles.actions}>
             <a href="#projects" className={styles.primaryBtn}>
               View Projects
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -62,8 +62,8 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        
-        <div className={`${styles.visual} ${mounted ? styles.visible : ''}`}>
+
+        <div className={styles.visual} aria-hidden={!mounted}>
           <div className={styles.avatarWrapper}>
             <div className={styles.avatarPlaceholder}>
               <Image
@@ -72,6 +72,7 @@ export default function Hero() {
                 width={280}
                 height={280}
                 className={styles.avatarImage}
+                priority
               />
             </div>
           </div>

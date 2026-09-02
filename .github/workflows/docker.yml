@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/raniweb
 
@@ -19,6 +20,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Debug - List files
+        run: |
+          echo "=== All files ==="
+          find . -type f -not -path './node_modules/*' -not -path './.git/*' | head -50
+          echo "=== Components ==="
+          ls -la components/
+          echo "=== index.tsx exists? ==="
+          test -f components/index.tsx && echo "YES" || echo "NO"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

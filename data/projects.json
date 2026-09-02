@@ -31,7 +31,7 @@
   },
   {
     "id": 4,
-    "title": "아크 서바이벌 어센디드 디스코드 봇",
+    "title": "아크 서바이벌 어센디드 봇",
     "description": "게임 서버 정보·유저정보·서버정보 조회 디스코드 봇",
     "tags": ["Python"],
     "year": "2024",
@@ -43,7 +43,7 @@
     "id": 5,
     "title": "대진표 사이트",
     "description": "체육대회 대진표 생성 및 관리 사이트",
-    "tags": ["Python", "HTML", "JS", "CSS"],
+    "tags": ["Python", "MySQL", "HTML", "JS", "CSS"],
     "year": "2025",
     "github": "",
     "url": "",
@@ -58,5 +58,45 @@
     "github": "",
     "url": "",
     "mdFile": "festival-reservation.md"
+  },
+  {
+    "id": 7,
+    "title": "Fivem 팩션 인트라넷",
+    "description": "Fivem 팩션 관리 및 거래 모니터링 시스템",
+    "tags": ["React", "Node.js", "MySQL", "Discord.js"],
+    "year": "2026",
+    "github": "",
+    "url": "",
+    "mdFile": "HOOK_intranet_portfolio.md"
+  },
+  {
+    "id": 8,
+    "title": "오모오모 AI 모자이크 웹서비스",
+    "description": "YOLO 기반 이미지·영상 모자이크 처리",
+    "tags": ["Python", "Flask", "YOLO", "OpenCV", "MySQL", "Socket.IO"],
+    "year": "2024",
+    "github": "",
+    "url": "",
+    "mdFile": "omo_portfolio.md"
+  },
+  {
+    "id": 9,
+    "title": "FiveM 스태프 인트라넷",
+    "description": "FiveM 서버 운영진 웹 기반 스태프 관리 시스템",
+    "tags": ["Node.js", "Express", "React", "TypeScript", "MariaDB", "Sequelize", "JWT", "Mantine"],
+    "year": "2026",
+    "github": "",
+    "url": "",
+    "mdFile": "staff_intranet_portfolio.md"
+  },
+  {
+    "id": 10,
+    "title": "LAC EMS 문서 센터",
+    "description": "사내 기술 문서와 매뉴얼을 마크다운으로 작성·관리·열람할 수 있는 웹 기반 문서 관리 시스템",
+    "tags": ["Next.js", "React", "TypeScript", "NestJS", "Node.js", "Express", "SQLite", "JWT", "Helmet", "Multer"],
+    "year": "2026",
+    "github": "",
+    "url": "",
+    "mdFile": "lac_ems_portfoliod.md"
   }
 ]
