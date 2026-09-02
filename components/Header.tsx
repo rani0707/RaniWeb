@@ -26,20 +26,48 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileOpen])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileOpen) {
+        setMobileOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [mobileOpen])
+
+  const handleNavClick = () => {
+    setMobileOpen(false)
+  }
+
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        <a href="#" className={styles.logo}>
+        <a href="#" className={styles.logo} onClick={handleNavClick}>
           RANI
         </a>
-        
-        <nav className={`${styles.nav} ${mobileOpen ? styles.mobileOpen : ''}`}>
+
+        <nav
+          className={`${styles.nav} ${mobileOpen ? styles.mobileOpen : ''}`}
+          onClick={handleNavClick}
+        >
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
               className={styles.navLink}
-              onClick={() => setMobileOpen(false)}
+              onClick={handleNavClick}
             >
               {item.label}
             </a>
@@ -74,7 +102,8 @@ export default function Header() {
           <button
             className={styles.menuBtn}
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
+            aria-expanded={mobileOpen}
           >
             <span className={`${styles.menuLine} ${mobileOpen ? styles.menuLineTop : ''}`} />
             <span className={`${styles.menuLine} ${mobileOpen ? styles.menuLineMid : ''}`} />

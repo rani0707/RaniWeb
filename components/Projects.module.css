@@ -422,6 +422,44 @@
   }
 }
 
+@media (max-width: 380px) {
+  .modalContent {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .modalImageWrapper {
+    margin: -20px -20px 16px;
+    max-height: 180px;
+  }
+
+  .modalImage {
+    max-height: 180px;
+  }
+
+  .modalTitle {
+    font-size: 18px;
+  }
+
+  .modalClose {
+    width: 28px;
+    height: 28px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .modalFooter {
+    flex-wrap: wrap;
+  }
+
+  .modalGitBtn,
+  .modalUrlBtn {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+}
+
 .cardTop {
   display: flex;
   justify-content: space-between;
@@ -495,6 +533,7 @@
 
   .box {
     max-height: 480px;
+    overflow-y: auto;
   }
 }
 
@@ -506,6 +545,7 @@
   .box {
     max-height: 420px;
     padding: 16px;
+    overflow-y: auto;
   }
 }
 

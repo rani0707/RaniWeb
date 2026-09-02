@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './Projects.module.css'
@@ -21,9 +21,42 @@ interface ProjectModalProps {
   onClose: () => void
 }
 
+// Simple in-memory rate limiter
+const rateLimiter = {
+  requests: new Map<string, number[]>(),
+  limit: 10,
+  windowMs: 60000, // 1 minute
+
+  isAllowed(clientId: string): boolean {
+    const now = Date.now()
+    const timestamps = this.requests.get(clientId) || []
+    const validTimestamps = timestamps.filter(ts => now - ts < this.windowMs)
+
+    if (validTimestamps.length >= this.limit) {
+      return false
+    }
+
+    validTimestamps.push(now)
+    this.requests.set(clientId, validTimestamps)
+    return true
+  }
+}
+
+// Validate and sanitize mdFile path to prevent directory traversal
+function validateMdFilePath(mdFile: string): string | null {
+  // Only allow alphanumeric, hyphens, underscores, and .md extension
+  const safePattern = /^[a-zA-Z0-9_-]+\.md$/
+  if (!safePattern.test(mdFile)) {
+    return null
+  }
+  return mdFile
+}
+
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const [mdContent, setMdContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const clientIdRef = useRef<string>(`modal-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,7 +73,24 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/content/projects/${project.mdFile}`)
+    setError(null)
+
+    // Validate path to prevent directory traversal attacks
+    const safeFileName = validateMdFilePath(project.mdFile)
+    if (!safeFileName) {
+      setMdContent(`# ${project.title}\n\n잘못된 파일 경로입니다.`)
+      setLoading(false)
+      return
+    }
+
+    // Check rate limit
+    if (!rateLimiter.isAllowed(clientIdRef.current)) {
+      setMdContent(`# ${project.title}\n\n요청이 너무 많습니다. 잠시 후 다시 시도해주세요.`)
+      setLoading(false)
+      return
+    }
+
+    fetch(`/content/projects/${safeFileName}`)
       .then((res) => {
         if (!res.ok) throw new Error('Not found')
         return res.text()
