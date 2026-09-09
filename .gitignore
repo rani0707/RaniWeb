@@ -11,3 +11,4 @@ start.bat
 *.log
 .DS_Store
 Thumbs.db
+tsconfig.tsbuildinfo

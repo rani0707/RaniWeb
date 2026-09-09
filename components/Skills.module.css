@@ -58,6 +58,8 @@
   font-weight: 500;
   color: var(--text-secondary);
   transition: all 0.2s ease;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .skillItem:hover {
@@ -73,7 +75,7 @@
 
 @media (max-width: 768px) {
   .section {
-    padding: 80px 0;
+    padding: 48px 0;
   }
 
   .container {
@@ -92,7 +94,7 @@
 
 @media (max-width: 480px) {
   .section {
-    padding: 60px 0;
+    padding: 40px 0;
   }
 
   .container {
