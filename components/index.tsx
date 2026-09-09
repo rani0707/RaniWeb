@@ -9,35 +9,39 @@ import Experience from './Experience'
 import Certifications from './Certifications'
 import Awards from './Awards'
 import Footer from './Footer'
-import useIsMobile from './hooks/useIsMobile'
 import MobileHome from './mobile/MobileHome'
 
+/**
+ * 모바일/데스크탑 토글 방식:
+ * - React 조건부 렌더링 대신 두 트리를 모두 렌더
+ * - CSS 클래스(mobile-only / desktop-only)의 display 토글로 전환
+ * - SSR·CSR 마크업이 동일 → hydration mismatch 없음
+ * - 미디어쿼리 변경 시 React 리렌더 불필요 → 부드러운 전환
+ */
 export default function Home() {
-  const isMobile = useIsMobile(768)
-
-  // 모바일에서는 모바일 전용 단순화된 트리를 렌더링한다.
-  // CSS Modules 스코핑 충돌과 미디어쿼리 누락 문제를 우회하기 위함.
-  if (isMobile) {
-    return (
-      <>
+  return (
+    <>
+      {/* ── 모바일 트리 (CSS로만 숨김/표시) ── */}
+      <div className="mobile-only">
         <Header />
         <MobileHome />
-      </>
-    )
-  }
+      </div>
 
-  return (
-    <main>
-      <Header />
-      <Hero />
-      <Suspense fallback={null}>
-        <Projects />
-      </Suspense>
-      <Skills />
-      <Experience />
-      <Certifications />
-      <Awards />
-      <Footer />
-    </main>
+      {/* ── 데스크탑 트리 (CSS로만 숨김/표시) ── */}
+      <div className="desktop-only">
+        <Header />
+        <main>
+          <Hero />
+          <Suspense fallback={null}>
+            <Projects />
+          </Suspense>
+          <Skills />
+          <Experience />
+          <Certifications />
+          <Awards />
+          <Footer />
+        </main>
+      </div>
+    </>
   )
 }
