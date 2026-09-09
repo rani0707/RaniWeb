@@ -2,29 +2,33 @@
    반응형 토글 유틸리티
    - SSR/CSR 모두 동일한 마크업을 내보내고
      CSS 미디어쿼리만 display를 전환한다.
-     → hydration mismatch / 두 트리 동시 표시 없음
+   - !important + visibility: hidden으로 어떤 다른 CSS도 덮어쓸 수 없게 한다.
    ============================================= */
 
 .mobile-only {
-  display: none;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .desktop-only {
-  display: block;
+  display: block !important;
+  visibility: visible !important;
 }
 
 @media (max-width: 767px) {
   .mobile-only {
-    display: block;
+    display: block !important;
+    visibility: visible !important;
   }
 
   .desktop-only {
-    display: none;
+    display: none !important;
+    visibility: hidden !important;
   }
 }
 
 /* =============================================
-   기존 모바일 글로벌 스타일 (768px 이하)
+   기존 모바일 글로벌 스타일
    ============================================= */
 
 @media (max-width: 768px) {
