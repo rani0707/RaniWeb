@@ -1,0 +1,516 @@
+/* 모바일 전용 레이아웃 스타일.
+   데스크탑/태블릿에는 영향을 주지 않으며, components/MobileHome에서만 import한다. */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+/* ───────────────── Hero ───────────────── */
+.hero {
+  padding: 100px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.heroAvatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border-light);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.heroBadgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+}
+
+.heroHighlight {
+  background: linear-gradient(180deg, transparent 60%, var(--border-color) 60%);
+  padding: 0 2px;
+}
+
+.heroDescription {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.heroStatNumber {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.heroStatLabel {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.heroStatDivider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-color);
+}
+
+.heroActions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.heroBtnPrimary,
+.heroBtnSecondary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.heroBtnPrimary {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.heroBtnSecondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* ───────────────── 공통 섹션 ───────────────── */
+.section {
+  padding: 40px 20px;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+}
+
+.sectionAlt {
+  background: var(--bg-secondary);
+}
+
+.sectionHeader {
+  margin-bottom: 24px;
+}
+
+.sectionLabel {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+/* ───────────────── Projects ───────────────── */
+.projectList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projectCard {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.projectTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.projectYear {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.projectGit {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.projectTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.projectDesc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.projectTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.projectTag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.projectDetail {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ───────────────── Skills ───────────────── */
+.skillList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skillCategory {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.skillCategoryTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.skillItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillItem {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+/* ───────────────── Experience ───────────────── */
+.expList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expItem {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.expPeriod {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+}
+
+.expCompany {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.expRole {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* ───────────────── Certifications ───────────────── */
+.certList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.certCard {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.certIcon {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+
+.certBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.certYear {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.certName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.certIssuer {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ───────────────── Awards ───────────────── */
+.awardList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.awardCard {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.awardTop {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.awardRank {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--border-color);
+  line-height: 1;
+}
+
+.awardYear {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.awardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.awardOrg {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.awardDesc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* ───────────────── Footer ───────────────── */
+.footer {
+  padding: 32px 20px 24px;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+}
+
+.footerBrand {
+  margin-bottom: 24px;
+}
+
+.footerLogo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.footerTagline {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.footerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.footerLinkGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footerLinkTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.footerLink {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.footerBottom {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+}
+
+.footerCopyright {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.footerSocial {
+  display: flex;
+  gap: 12px;
+}
+
+.footerSocialLink {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
