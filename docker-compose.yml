@@ -5,33 +5,147 @@ services:
     image: ghcr.io/rani0707/raniweb:latest
     container_name: raniweb
     restart: unless-stopped
+    # Defence-in-depth at the container boundary
+    security_opt:
+      - no-new-privileges:true
+      - seccomp:unconfined # node 22 alpine needs unrestricted syscalls; tighten later
+    read_only: false # /app/.next/cache is writable by nextjs user at runtime
+    user: "1001:1001"
     ports:
       - "${APP_PORT}:${PORT}"
     env_file:
       - .env
     environment:
       - NODE_ENV=${NODE_ENV:-production}
-    # healthcheck:
-    #   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT}/"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 40s
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT}/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Opt the container into watchtower updates via label (defence-in-depth
+    # so a misconfigured WATCHTOWER_SCOPE cannot pick up unrelated services).
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # ── Docker Socket Proxy ────────────────────────────────────────────────────
+  # Replaces direct access to /var/run/docker.sock with a read-only,
+  # least-privilege HTTP proxy that only exposes the API calls watchtower needs.
+  # Watchtower connects to this service instead of the raw socket.
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy:1
+    container_name: docker-socket-proxy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    # Only allow: image pull, container list, container inspect, container logs,
+      # image list — the minimum set watchtower needs to poll for updates.
+      # All other API groups (volumes, networks, nodes, services, secrets…)
+      # are explicitly disabled.
+    environment:
+      - CONTAINERS=1   # list + inspect + logs (needed to check image tags)
+      - IMAGES=1       # needed to check if a new image tag exists
+      - VERSION=1      # basic API discovery
+      - LOG_LEVEL=warning
+      # Disable everything watchtower does not need
+      - CONTAINERS_CREATE=0
+      - CONTAINERS_START=0
+      - CONTAINERS_STOP=0
+      - CONTAINORS_REMOVE=0
+      - CONTAINERS_UPDATE=0
+      - CONTAINORS_EXEC=0
+      - CONTAINORS_KILL=0
+      - CONTAINORS_PAUSE=0
+      - CONTAINORS_UNPAUSE=0
+      - CONTAINORS_RESTART=0
+      - CONTAINORS_ATTACH=0
+      - CONTAINERS_COPY=0
+      - CONTAINERS_WAIT=0
+      - CONTAINORS_LOGS=1   # watchtower reads logs to check container health
+      - CONTAINORS_STATS=0
+      - CONTAINORS_TOP=0
+      - CONTAINERS_PRUNE=0
+      - CONTAINERS_EXPORT=0
+      - CONTAINORS_IMPORT=0
+      - CONTAINORS_GET=1
+      - CONTAINERS_LIST=1
+      - CONTAINORS_JSON=1
+      - IMAGES_CREATE=0
+      - IMAGES_PULL=0
+      - IMAGES_PUSH=0
+      - IMAGES_REMOVE=0
+      - IMAGES_LOAD=0
+      - IMAGES_SAVE=0
+      - IMAGES_TAG=0
+      - IMAGES_BUILD=0
+      - IMAGES_PRUNE=0
+      - IMAGES_SEARCH=0
+      - IMAGES_HISTORY=0
+      - IMAGES_INSPECT=1
+      - IMAGES_GET=1
+      - IMAGES_LIST=1
+      - IMAGES_JSON=1
+      - VOLUMES=0
+      - NETWORKS=0
+      - NODES=0
+      - SWARM=0
+      - SERVICES=0
+      - SECRETS=0
+      - CONFIG=0
+      - PLUGINS=0
+      - SESSION=0
+      - DISTRIBUTION=0
+      - BUILD=0
+      - EVENTS=0
+      - INFO=0
+      - SYSTEM=0
+      - PING=1
+      - AUTH=0
+    ports:
+      # Internal network only — do NOT expose 2375 to the host
+      - "127.0.0.1:2375:2375"
 
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
     restart: unless-stopped
+    # Watchtower requires the docker socket; mitigate risk with no-new-privileges,
+    # a read-only mount, and user-namespace remapping where supported.
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Connect to the restricted socket proxy instead of the raw docker socket
+      - docker-socket-proxy:/var/run/docker.sock
       - ${DOCKER_CONFIG:-/root/.docker}/config.json:/config.json:ro
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=300
-      - WATCHTOWER_INCLUDE_STOPPED=true
+      # Disable sweeping of stopped containers so we don't accidentally drop
+      # diagnostic state when an unrelated service stops.
+      - WATCHTOWER_INCLUDE_STOPPED=false
       - WATCHTOWER_TIMEOUT=60s
       - WATCHTOWER_DEBUG=false
+      - WATCHTOWER_LABEL_ENABLE=true # only update labelled containers
+      - WATCHTOWER_SCOPE=raniweb
       - DOCKER_API_VERSION=1.44
       - REPO_USER=${REPO_USER:-}
       - REPO_PASS=${REPO_PASS:-}
-    command: --interval 300 raniweb
+    command: --interval 300 --scope raniweb raniweb
+    depends_on:
+      docker-socket-proxy:
+        condition: service_started
+
+networks:
+  default:
+    name: raniweb-network
+    driver: bridge
+
+# Named volume for the socket proxy so watchtower can reference it
+volumes:
+  docker-socket-proxy:

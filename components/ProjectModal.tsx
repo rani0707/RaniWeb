@@ -45,16 +45,40 @@ const rateLimiter = {
 
 type MarkdownComponents = React.ComponentPropsWithoutRef<'img'> & React.ComponentPropsWithoutRef<'a'>
 
-// Validate md file path to prevent directory traversal
+// Whitelist: only allow `^[a-zA-Z0-9_-]+.md$`. This blocks any traversal
+// (`../`), absolute path (`/etc/...`), URL-encoded variants, or unicode tricks.
 function isValidMdFile(filename: string): boolean {
-  return /^[a-zA-Z0-9_-]+\.md$/.test(filename)
+  return typeof filename === 'string' && /^[a-zA-Z0-9_-]+\.md$/.test(filename)
 }
 
-// Sanitize URLs in markdown content to prevent javascript: and other dangerous schemes
-function sanitizeUrl(url: string): string {
-  if (/^(https?|mailto):\/\//i.test(url)) return url
-  if (/^#/.test(url)) return url
-  return '#'
+// Strict URL sanitizer: only http(s), mailto, fragment, and same-origin
+// relative paths are permitted. `javascript:`, `data:`, `vbscript:`, and
+// protocol-relative `//evil.com/x` URLs are blocked.
+function sanitizeUrl(url: string | undefined | null): string | undefined {
+  if (!url) return undefined
+  const trimmed = url.trim()
+  if (!trimmed) return undefined
+
+  // Explicitly block dangerous schemes (case-insensitive, whitespace-tolerant)
+  if (/^\s*(javascript|vbscript|data|file):/i.test(trimmed)) return undefined
+
+  // Allow fragments
+  if (trimmed.startsWith('#')) return trimmed
+
+  // Allow http(s) and mailto
+  if (/^(https?|mailto):\/\//i.test(trimmed)) return trimmed
+
+  // Allow same-origin absolute paths starting with `/` (but NOT `//` which is
+  // protocol-relative) and NOT `/\` (some browsers interpret as Windows path)
+  if (
+    trimmed.startsWith('/') &&
+    !trimmed.startsWith('//') &&
+    !trimmed.startsWith('/\\')
+  ) {
+    return trimmed
+  }
+
+  return undefined
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
@@ -99,14 +123,32 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   const markdownComponents: Partial<Record<string, React.ComponentType<MarkdownComponents>>> = {
     img: ({ src, alt }) => {
-      const imgSrc = typeof src === 'string' && (src.startsWith('/') || src.startsWith('../') || src.startsWith('./') || /^https?:\/\//.test(src)) ? src : undefined
-      return <img src={imgSrc} alt={alt || ''} style={{ maxWidth: '100%', height: 'auto' }} />
+      const imgSrc = sanitizeUrl(typeof src === 'string' ? src : undefined)
+      if (!imgSrc) return null
+      // Styling comes from `.mdContent img` in Projects.module.css to keep
+      // `style-src-attr 'none'` strict CSP compatible.
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imgSrc}
+          alt={alt || ''}
+          loading="lazy"
+          decoding="async"
+        />
+      )
     },
-    a: ({ href, children }) => (
-      <a href={href ? sanitizeUrl(href) : undefined} target="_blank" rel="noopener noreferrer nofollow">
-        {children}
-      </a>
-    ),
+    a: ({ href, children }) => {
+      const safeHref = sanitizeUrl(typeof href === 'string' ? href : undefined)
+      return (
+        <a
+          href={safeHref}
+          target="_blank"
+          rel="noopener noreferrer nofollow ugc"
+        >
+          {children}
+        </a>
+      )
+    },
   }
 
   return (
