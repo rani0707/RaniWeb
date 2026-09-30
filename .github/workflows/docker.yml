@@ -9,6 +9,14 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/raniweb
+  # Use AWS ECR public mirror for vulnerability DB. The default GitHub Releases
+  # mirror frequently hits rate limits from GHA runner IPs, which causes
+  # `aquasecurity/trivy-action` to exit 1 even with `exit-code: '0'`.
+  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
+  TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
+  # Pin Trivy binary version to a known-stable release. Auto-resolved latest
+  # has produced exit-1 regressions on first-run DB downloads in past builds.
+  TRIVY_VERSION: 0.58.1
 
 jobs:
   build-and-push:
@@ -57,7 +65,31 @@ jobs:
           provenance: true
           sbom: true
 
+      - name: Pull image to local daemon for reliable scanning
+        # Trivy performs `docker pull` internally. By pulling here first we
+        # get a deterministic failure (auth/manifest/race) instead of a
+        # generic exit-1 buried in DB-download noise, and we eliminate the
+        # rare race where trivy polls GHCR before the manifest is visible.
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Retry up to 3 times with exponential backoff to absorb the
+          # GHCR propagation window right after `docker push`.
+          for i in 1 2 3; do
+            if docker pull "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; then
+              echo "Pulled image on attempt $i"
+              exit 0
+            fi
+            echo "Pull attempt $i failed, retrying in $((i*5))s..."
+            sleep $((i*5))
+          done
+          echo "::error::Failed to pull image after 3 attempts"
+          exit 1
+
       - name: Run Trivy vulnerability scan (image)
+        # `continue-on-error` lets the SARIF-upload step still run so we
+        # capture whatever findings were emitted before the failure.
+        continue-on-error: true
         uses: aquasecurity/trivy-action@v0.33.1
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
@@ -65,11 +97,15 @@ jobs:
           output: 'trivy-image-results.sarif'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
-          # Don't fail on HIGH to avoid breaking unrelated infra upgrades;
-          # CRITICAL is treated as a hard gate below.
+          # Scan the local daemon copy (loaded above) instead of pulling
+          # again from the registry — avoids race + re-auth.
+          offline-scan: true
+          # 0 = never fail this step on findings; the dedicated gate step
+          # below enforces CRITICAL as a hard failure.
           exit-code: '0'
 
       - name: Run Trivy filesystem scan
+        continue-on-error: true
         uses: aquasecurity/trivy-action@v0.33.1
         with:
           scan-type: 'fs'
@@ -82,19 +118,26 @@ jobs:
 
       - name: Upload Trivy image scan results to GitHub Security tab
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-image-results.sarif'
           category: trivy-image
+          # If the scan step failed before producing a file, warn instead
+          # of erroring out — we still want the fs-scan results to upload.
+          if-no-files-found: warn
 
       - name: Upload Trivy filesystem scan results to GitHub Security tab
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-fs-results.sarif'
           category: trivy-fs
+          if-no-files-found: warn
 
       - name: Fail build on CRITICAL vulnerabilities
+        # This is the actual hard gate. We keep it separate from the SARIF
+        # emitters so security alerts are never lost even if the gate
+        # itself fails for infra reasons.
         uses: aquasecurity/trivy-action@v0.33.1
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
