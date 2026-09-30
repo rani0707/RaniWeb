@@ -14,9 +14,13 @@ env:
   # `aquasecurity/trivy-action` to exit 1 even with `exit-code: '0'`.
   TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
   TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
-  # Pin Trivy binary version to a known-stable release. Auto-resolved latest
-  # has produced exit-1 regressions on first-run DB downloads in past builds.
-  TRIVY_VERSION: 0.58.1
+  # Pin the Trivy binary version. The install script (`contrib/install.sh`)
+  # downloads prebuilt binaries from `releases/download/<version>/trivy_<version>_Linux-64bit.tar.gz`.
+  # Trivy occasionally publishes source-only releases (no prebuilt binaries)
+  # — v0.58.x and v0.65.0 are both source-only, which makes install.sh exit
+  # with `crit unable to find` or a 404 on the tarball. v0.74.0 is the
+  # current latest stable with full Linux/macOS/Windows prebuilt assets.
+  TRIVY_VERSION: v0.74.0
 
 jobs:
   build-and-push:
