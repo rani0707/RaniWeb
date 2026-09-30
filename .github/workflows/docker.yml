@@ -9,10 +9,23 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/raniweb
-  # Use AWS ECR public mirror for vulnerability DB. The default GitHub Releases
-  # mirror frequently hits rate limits from GHA runner IPs, which causes
-  # `aquasecurity/trivy-action` to exit 1 even with `exit-code: '0'`.
-  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
+  # Pull the vulnerability DB from GHCR (ghcr.io/aquasecurity/trivy-db).
+  #
+  # - ECR Public (`public.ecr.aws/aquasecurity/trivy-db`) enforces a
+  #   500 MB/day anonymous data-transfer limit per IP. GHA runners are
+  #   shared NAT IPs, so the limit is exhausted by other tenants before
+  #   we can pull the ~125 MB DB, surfacing as:
+  #     `TOOMANYREQUESTS: Data limit exceeded`
+  #   This is the error we hit on the first scan.
+  # - GHCR serves public OCI artifacts with anonymous Bearer tokens
+  #   obtained via `/token?service=ghcr.io&scope=repository:...:pull`,
+  #   which Trivy's OCI client handles natively. Verified reachable
+  #   and 124 MB total layer size.
+  # - We keep `TRIVY_JAVA_DB_REPOSITORY` pointing at ECR Public. Trivy
+  #   only touches it for Java scans (Maven/Gradle); our container is
+  #   node:22-alpine so Java DB is never downloaded — only schema
+  #   metadata is registered, which doesn't consume data budget.
+  TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db
   TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
   # Pin the Trivy binary version. The install script (`contrib/install.sh`)
   # downloads prebuilt binaries from `releases/download/<version>/trivy_<version>_Linux-64bit.tar.gz`.
