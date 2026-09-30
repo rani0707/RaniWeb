@@ -89,6 +89,8 @@ jobs:
       - name: Run Trivy vulnerability scan (image)
         # `continue-on-error` lets the SARIF-upload step still run so we
         # capture whatever findings were emitted before the failure.
+        # Pin Trivy binary to 0.58.1 (v0.65.0 default has first-run DB
+        # download regressions on GHA runners).
         continue-on-error: true
         uses: aquasecurity/trivy-action@v0.33.1
         with:
@@ -97,9 +99,14 @@ jobs:
           output: 'trivy-image-results.sarif'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
-          # Scan the local daemon copy (loaded above) instead of pulling
-          # again from the registry — avoids race + re-auth.
-          offline-scan: true
+          # Pin the installed Trivy version. The default is `v0.65.0` which
+          # has caused exit-1 failures on first-run DB downloads in our
+          # GHA environment. 0.58.1 is the latest known-stable release.
+          version: ${{ env.TRIVY_VERSION }}
+          # Trivy pulls the vuln DB on first run and caches it (cache-dir
+          # defaults to ${{ github.workspace }}/.cache/trivy). We must NOT
+          # set `offline-scan: true` here because the cache is empty on the
+          # first run, which would make Trivy exit 1 with no DB.
           # 0 = never fail this step on findings; the dedicated gate step
           # below enforces CRITICAL as a hard failure.
           exit-code: '0'
@@ -114,6 +121,7 @@ jobs:
           output: 'trivy-fs-results.sarif'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
+          version: ${{ env.TRIVY_VERSION }}
           exit-code: '0'
 
       - name: Upload Trivy image scan results to GitHub Security tab
@@ -145,6 +153,7 @@ jobs:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           severity: 'CRITICAL'
           ignore-unfixed: true
+          version: ${{ env.TRIVY_VERSION }}
           exit-code: '1'
 
       - name: Cleanup GHA cache
