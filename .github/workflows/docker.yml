@@ -117,22 +117,24 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy image scan results to GitHub Security tab
+        # The action errors when the SARIF file is absent; `continue-on-error`
+        # ensures a missing file (e.g. due to a transient scan failure) does
+        # not break the rest of the workflow. The scan failure is still
+        # surfaced in the failed-step indicator of the GitHub Actions UI.
+        continue-on-error: true
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-image-results.sarif'
           category: trivy-image
-          # If the scan step failed before producing a file, warn instead
-          # of erroring out — we still want the fs-scan results to upload.
-          if-no-files-found: warn
 
       - name: Upload Trivy filesystem scan results to GitHub Security tab
+        continue-on-error: true
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-fs-results.sarif'
           category: trivy-fs
-          if-no-files-found: warn
 
       - name: Fail build on CRITICAL vulnerabilities
         # This is the actual hard gate. We keep it separate from the SARIF

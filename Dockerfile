@@ -17,6 +17,14 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
+# Next.js build with `output: 'standalone'` and App Router routinely peaks at
+# 2.5–4 GB of V8 heap. The default Docker buildx VM only allocates ~2 GB,
+# which makes the Node process get SIGKILL'd and surface as a misleading
+# `exit code: 1`. Raise the heap so the build doesn't OOM on small runners.
+# `NEXT_TELEMETRY_DISABLED=1` keeps Next from phoning home during the build.
+ENV NODE_OPTIONS=--max-old-space-size=3072
+ENV NEXT_TELEMETRY_DISABLED=1
+
 RUN npm run build
 
 # Stage 2: Production runtime
